@@ -1,39 +1,50 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+import { router, Stack } from "expo-router";
+import { StatusBar } from "expo-status-bar";
+import { ThemeProvider, useTheme } from "@/const/theme";
+import { SafeAreaProvider } from "react-native-safe-area-context";
+import { SafeAreaView, ActivityIndicator, Text } from "react-native";
+import React, { useState, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import { useColorScheme } from '@/hooks/useColorScheme';
+function LoadingScreen({ isDarkMode }) {
+  return (
+    <SafeAreaView style={{
+      flex: 1,
+      justifyContent: 'center',
+      alignItems: 'center',
+      backgroundColor: isDarkMode ? "#000" : "#ffffff"
+    }}>
+      <ActivityIndicator size="large" color={isDarkMode ? "#ffffff" : "#000000"} />
+      <Text style={{ color: isDarkMode ? "#ffffff" : "#000000", marginTop: 20 }}>
+        Loading...
+      </Text>
+    </SafeAreaView>
+  );
+}
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
-SplashScreen.preventAutoHideAsync();
-
-export default function RootLayout() {
-  const colorScheme = useColorScheme();
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
-
-  useEffect(() => {
-    if (loaded) {
-      SplashScreen.hideAsync();
-    }
-  }, [loaded]);
-
-  if (!loaded) {
-    return null;
-  }
+function AppContent() {
+  const { isDarkMode } = useTheme();
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <Stack>
-        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-        <Stack.Screen name="+not-found" />
-      </Stack>
-      <StatusBar style="auto" />
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: isDarkMode ? "#000" : "#ffffff" }}>
+        <StatusBar style={isDarkMode ? "light" : "dark"} />
+        <Stack screenOptions={{ headerShown: false }}>
+          <Stack.Screen name="index" />
+          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="Login" />
+          <Stack.Screen name="Register" />
+        </Stack>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
+}
+
+export default function RootLayout() {
+  return (
+    <ThemeProvider>
+      <AppContent />
     </ThemeProvider>
   );
 }
+
