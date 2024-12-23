@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import React from 'react';
 import useUserData from '@/hooks/userData'; // Import the custom hook
 import { useTheme } from '@/const/theme';
-import HomaPage from '@/componant/Quality/HomaPage';
+import HomaPage from '@/componant/HomaPage';
 
 export default function App() {
   const { colors } = useTheme();
