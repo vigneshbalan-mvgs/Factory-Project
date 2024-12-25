@@ -7,6 +7,7 @@ const useUserData = () => {
     name: '',
     role: '',
     id: '',
+    tokne: '',
   });
   const [loading, setLoading] = useState(true);
 
@@ -16,11 +17,13 @@ const useUserData = () => {
         const name = await AsyncStorage.getItem('name');
         const role = await AsyncStorage.getItem('role');
         const id = await AsyncStorage.getItem('id');
+        const token = await AsyncStorage.getItem('token');
 
         setUserData({
           name: name || 'No name found',
           role: role || 'No role found',
           id: id || 'No ID found',
+          token: token || 'No token found',
         });
       } catch (error) {
         console.error('Error retrieving data from AsyncStorage:', error);

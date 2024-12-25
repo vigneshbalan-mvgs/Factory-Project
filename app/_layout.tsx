@@ -4,7 +4,6 @@ import { ThemeProvider, useTheme } from "@/const/theme";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { SafeAreaView, ActivityIndicator, Text } from "react-native";
 import React, { useState, useEffect } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function LoadingScreen({ isDarkMode }) {
   return (
