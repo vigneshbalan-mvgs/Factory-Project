@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, ScrollView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
 
 const AdminView = () => {
   const [machineDetails, setMachineDetails] = useState({});
@@ -32,6 +32,7 @@ const AdminView = () => {
       produced: 95,   // Number of units produced successfully
       weight: '475kg', // Actual weight produced
       expected_weight: '500kg', // Expected weight
+      approved: false,  // Approve status for testing
     },
     {
       test_id: 'T002',
@@ -41,6 +42,7 @@ const AdminView = () => {
       produced: 110,
       weight: '550kg',
       expected_weight: '600kg',
+      approved: false,
     },
     {
       test_id: 'T003',
@@ -50,6 +52,7 @@ const AdminView = () => {
       produced: 85,
       weight: '425kg',
       expected_weight: '450kg',
+      approved: false,
     },
   ];
 
@@ -63,6 +66,33 @@ const AdminView = () => {
     }, 1000); // Simulating a delay
   }, []);
 
+  // Function to approve a quality test
+  const approveTest = (test_id) => {
+    setQualityTests(prevTests =>
+      prevTests.map(test =>
+        test.test_id === test_id ? { ...test, approved: true } : test
+      )
+    );
+  };
+
+  // Render function for quality test items (Updated to show production details)
+  const renderTestItem = ({ item }) => (
+    <View style={styles.testCard}>
+      <Text>Name: UserName</Text>
+      <Text>Quantity: {item.quantity}</Text>
+      <Text>Produced: {item.produced}</Text>
+      <Text>Weight: {item.weight}</Text>
+      <Text>Expected Weight: {item.expected_weight}</Text>
+      <TouchableOpacity
+        style={[styles.approveButton, item.approved && styles.approvedButton]}
+        onPress={() => approveTest(item.test_id)}
+        disabled={item.approved}  // Disable if already approved
+      >
+        <Text style={styles.buttonText}>{item.approved ? 'Approved' : 'Approve'}</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
@@ -71,45 +101,32 @@ const AdminView = () => {
     );
   }
 
-  // Render function for quality test items (Updated to show production details)
-  const renderTestItem = ({ item }) => (
-    <View style={styles.testCard}>
-      <Text style={styles.testTitle}>Test ID: {item.test_id}</Text>
-      <Text>Date: {item.date}</Text>
-      <Text>Test Type: {item.test_type}</Text>
-      <Text>Quantity: {item.quantity}</Text>
-      <Text>Produced: {item.produced}</Text>
-      <Text>Weight: {item.weight}</Text>
-      <Text>Expected Weight: {item.expected_weight}</Text>
-    </View>
-  );
-
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>Machine Details</Text>
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>Machine ID: {machineDetails.machine_id}</Text>
-        <Text>Date: {machineDetails.date}</Text>
-        <Text>Status: {machineDetails.status}</Text>
-        <Text>Time: {machineDetails.time}</Text>
-        <Text>Started: {machineDetails.started}</Text>
-        <Text>Stopped: {machineDetails.stopped}</Text>
-        <Text>Reason: {machineDetails.reason}</Text>
-        <Text>Mold: {machineDetails.mold}</Text>
-        <Text>Material: {machineDetails.material}</Text>
-        <Text>Quantity: {machineDetails.quantity}</Text> {/* Quantity is related to production */}
-        <Text>Product: {machineDetails.product}</Text>
-        <Text>Expected Weight: {machineDetails.expected_weight}</Text>
-      </View>
+    <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+        <Text style={styles.header}>Machine Details</Text>
+        <View style={styles.card}>
+          <View style={styles.card}>
+            <Text>Started: {machineDetails.started}</Text>
+            <Text>Stopped: {machineDetails.stopped}</Text>
+            <Text>Reason: {machineDetails.reason}</Text>
+          </View>
+          <View style={styles.card}>
+            <Text>Status: {machineDetails.status}</Text>
+            <Text>Mold: {machineDetails.mold}</Text>
+            <Text>Material: {machineDetails.material}</Text>
+          </View>
+        </View>
 
-      <Text style={styles.header}>Production Details</Text>
-      <FlatList
-        data={qualityTests}
-        keyExtractor={(item) => item.test_id}
-        renderItem={renderTestItem}
-        contentContainerStyle={styles.listContainer}
-      />
-    </ScrollView>
+        <Text style={styles.header}>Production Details</Text>
+        <FlatList
+          data={qualityTests}
+          keyExtractor={(item) => item.test_id}
+          renderItem={renderTestItem}
+          contentContainerStyle={styles.listContainer}
+        />
+      </ScrollView>
+    </SafeAreaView>
   );
 };
 
@@ -137,12 +154,6 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 5,
-    color: '#007BFF',
-  },
   testCard: {
     backgroundColor: '#ffffff',
     borderRadius: 8,
@@ -159,6 +170,20 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 5,
     color: '#007BFF',
+  },
+  approveButton: {
+    backgroundColor: '#28a745',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    alignItems: 'center',
+  },
+  approvedButton: {
+    backgroundColor: '#6c757d',
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
   },
   loaderContainer: {
     flex: 1,

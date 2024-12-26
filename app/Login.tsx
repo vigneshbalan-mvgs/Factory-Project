@@ -27,7 +27,7 @@ export default function SignUpScreen() {
       type: role,
       name: name,
       Id: id,
-      password: password,
+      password: password,  // Send the hashed password
     };
 
     const options = {
@@ -38,50 +38,60 @@ export default function SignUpScreen() {
 
     try {
       const response = await fetch(url, options);
+
+      if (!response.ok) {
+        // If the response is not OK (status code 4xx or 5xx), throw an error
+        throw new Error(`Server error: ${response.statusText}`);
+      }
+
       const responseData = await response.json();
 
-      if (responseData && responseData.message) {
-        setResponseMessage(responseData.message);
+      console.log('Response Data:', responseData);
+
+      if (responseData.status === false) {
+        // Handle failed response (e.g., user not found)
+        setResponseMessage(responseData.message || 'An error occurred');
       } else {
-        setResponseMessage('Unexpected response format');
+        // Handle successful response
+        setResponseMessage('Sign-up successful');
+        await AsyncStorage.setItem('token', responseData.data);
+
+
+        // Save session details after successful signup
+        await AsyncStorage.setItem('isLoggedIn', 'true');
+        await AsyncStorage.setItem('role', role);
+        await AsyncStorage.setItem('id', id);
+        await AsyncStorage.setItem('name', name);
+
+        // Navigate based on the role
+        switch (role) {
+          case 'Admin':
+            router.replace('/Admin');
+            break;
+          case 'production_head':
+            router.replace('/Head');
+            break;
+          case 'operator':
+            router.replace('/Operator');
+            break;
+          case 'quality':
+            router.replace('/Quality');
+            break;
+        }
       }
-
-      // After successful signup, save values in AsyncStorage
-      await AsyncStorage.setItem('isLoggedIn', 'true');
-      await AsyncStorage.setItem('role', role);
-      await AsyncStorage.setItem('id', id);
-      await AsyncStorage.setItem('name', name);
-
-      // Navigate to the tabs screen
-      //send the page by the role
-      switch (role) {
-        case 'Admin':
-          router.replace('/Admin');
-          break;
-        case 'production_head':
-          router.replace('/Head');
-          break;
-        case 'operator':
-          router.replace('/Operator');
-          break;
-        case 'quality':
-          router.replace('/Quality');
-          break;
-      }
+    } catch (error) {
+      // Catch any errors thrown during the fetch or in the code above
+      console.error('Error:', error);
+      setResponseMessage(`An error occurred: ${error.message}`);
     }
-    catch (error) {
-      return console.error('Error:', error);
-    }
-  }
-    ;
-
+  };
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
       <Text style={[styles.title, { color: colors.text }]}>Sign Up</Text>
 
       <Dropdown
-        style={[styles.dropdown, { borderColor: colors.primary }]}
+        style={[styles.dropdown, { borderColor: colors.border }]}
         data={roleOptions}
         labelField="label"
         valueField="value"

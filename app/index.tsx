@@ -8,31 +8,26 @@ const SplashScreen = () => {
   const { isDarkMode } = useTheme(); // Dark mode state
   const [isCheckingLogin, setIsCheckingLogin] = useState(true); // For tracking loading state
 
+  const roleRoutes = {
+    'Admin': 'Admin',
+    'production_head': '/Head',
+    'operator': '/Operator',
+    'Worker': '/Quality'
+  };
+
   const checkLoginStatus = async () => {
     try {
       const isLoggedInValue = await AsyncStorage.getItem('isLoggedIn');
       const role = await AsyncStorage.getItem('role');
-      if (isLoggedInValue === 'true') {
-        switch (role) {
-          case 'Admin':
-            router.replace('/Admin');
-            break;
-          case 'production_head':
-            router.replace('/Head');
-            break;
-          case 'operator':
-            router.replace('/Operator');
-            break;
-          case 'Worker':
-            router.replace('/Quality');
-            break;
-        }
+
+      if (isLoggedInValue === 'true' && roleRoutes[role]) {
+        router.replace(roleRoutes[role]);
       } else {
-        router.replace("/Login"); // Navigate to welcome screen if not logged in
+        router.replace("/Login"); // Navigate to login if not logged in or invalid role
       }
     } catch (error) {
       console.error("Error checking login status:", error);
-      router.replace("/Login"); // Fallback to welcome screen if error occurs
+      router.replace("/Login"); // Fallback to login screen if error occurs
     } finally {
       setIsCheckingLogin(false); // Set loading to false after check
     }
@@ -59,5 +54,4 @@ const SplashScreen = () => {
 };
 
 export default SplashScreen;
-
 
