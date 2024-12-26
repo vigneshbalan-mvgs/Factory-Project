@@ -11,8 +11,27 @@ const SplashScreen = () => {
   const checkLoginStatus = async () => {
     try {
       const isLoggedInValue = await AsyncStorage.getItem('isLoggedIn');
+      const role = await AsyncStorage.getItem('role');
       if (isLoggedInValue === 'true') {
-        router.replace("/(tabs)"); // Navigate to main app screen if logged in
+        switch (role) {
+          case 'Admin':
+            router.replace('/Admin');
+            console.log("Admin route");
+            break;
+          case 'production_head':
+            router.replace('/Head');
+            console.log("Head route");
+            break;
+          case 'operator':
+            router.replace('/Operator');
+            console.log("Operator route");
+            break;
+          case 'Worker':
+            router.replace('/Quality');
+            console.log("Quality route");
+            break;
+        }
+
       } else {
         router.replace("/Login"); // Navigate to welcome screen if not logged in
       }

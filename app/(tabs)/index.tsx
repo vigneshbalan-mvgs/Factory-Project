@@ -2,7 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Dimensions } from 'react-native';
 import useUserData from '@/hooks/userData'; // Import the custom hook
 import { useTheme } from '@/const/theme';
-import HomaPage from '@/componant/HomaPage';
+import HomePage from '@/componant/HomePage';
 import * as Animatable from 'react-native-animatable';
 
 const { width } = Dimensions.get('window'); // Screen width
@@ -26,7 +26,7 @@ export default function App() {
 
       {/* Card Section */}
       <Animatable.View animation="fadeInUp" style={styles.card}>
-        <HomaPage role={userData.role} />
+        <HomePage role={userData.role} />
       </Animatable.View>
     </View>
   );

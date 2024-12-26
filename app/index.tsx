@@ -11,8 +11,22 @@ const SplashScreen = () => {
   const checkLoginStatus = async () => {
     try {
       const isLoggedInValue = await AsyncStorage.getItem('isLoggedIn');
+      const role = await AsyncStorage.getItem('role');
       if (isLoggedInValue === 'true') {
-        router.replace("/(tabs)"); // Navigate to main app screen if logged in
+        switch (role) {
+          case 'Admin':
+            router.replace('/Admin');
+            break;
+          case 'production_head':
+            router.replace('/Head');
+            break;
+          case 'operator':
+            router.replace('/Operator');
+            break;
+          case 'Worker':
+            router.replace('/Quality');
+            break;
+        }
       } else {
         router.replace("/Login"); // Navigate to welcome screen if not logged in
       }
@@ -37,9 +51,6 @@ const SplashScreen = () => {
         backgroundColor: isDarkMode ? "#000" : "#fff"
       }}>
         <ActivityIndicator size="large" color={isDarkMode ? "#fff" : "#000"} />
-        <Text style={{ color: isDarkMode ? "#fff" : "#000", marginTop: 20 }}>
-          Loading...
-        </Text>
       </SafeAreaView>
     );
   }

@@ -53,13 +53,28 @@ export default function SignUpScreen() {
       await AsyncStorage.setItem('name', name);
 
       // Navigate to the tabs screen
-      router.replace("/(tabs)");
-
-    } catch (error) {
-      console.error('Error:', error);
-      setResponseMessage('Error occurred during signup.');
+      //send the page by the role
+      switch (role) {
+        case 'Admin':
+          router.replace('/Admin');
+          break;
+        case 'production_head':
+          router.replace('/Head');
+          break;
+        case 'operator':
+          router.replace('/Operator');
+          break;
+        case 'quality':
+          router.replace('/Quality');
+          break;
+      }
     }
-  };
+    catch (error) {
+      return console.error('Error:', error);
+    }
+  }
+    ;
+
 
   return (
     <View style={[styles.container, { backgroundColor: colors.background }]}>
@@ -67,7 +82,7 @@ export default function SignUpScreen() {
 
       <Dropdown
         style={[styles.dropdown, { borderColor: colors.primary }]}
-        data={roleOptions} // Use correct data for dropdown
+        data={roleOptions}
         labelField="label"
         valueField="value"
         placeholder="Select Role"
@@ -103,7 +118,6 @@ export default function SignUpScreen() {
         color={colors.primary}
       />
 
-      {responseMessage && <Text style={[styles.responseMessage, { color: colors.text }]}>{responseMessage}</Text>}
     </View>
   );
 }
@@ -121,6 +135,9 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   dropdown: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+
     width: '100%',
     height: 50,
     marginBottom: 20,
@@ -141,8 +158,8 @@ const styles = StyleSheet.create({
   },
 });
 
-// Correctly declared data for dropdown
 const roleOptions = [
+  { label: "Admin", value: "Admin" },
   { label: "Production Head", value: "production_head" },
   { label: "Quality Checker", value: "quality" },
   { label: "Operator", value: "operator" },

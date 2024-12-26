@@ -30,7 +30,10 @@ function AppContent() {
         <StatusBar style={isDarkMode ? "light" : "dark"} />
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="index" />
-          <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="/Admin" />
+          <Stack.Screen name="/Head" />
+          <Stack.Screen name="/Operator" />
+          <Stack.Screen name="/Quality" />
           <Stack.Screen name="Login" />
           <Stack.Screen name="Register" />
         </Stack>

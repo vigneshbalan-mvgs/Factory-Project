@@ -6,6 +6,7 @@ import Operator from '@/app/(tabs)/Operator';
 
 
 const RoleBasedContent = ({ role }) => {
+  console.log(role);
   const renderContent = () => {
     switch (role) {
       case 'production_head':

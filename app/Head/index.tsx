@@ -8,10 +8,20 @@ const HomePage = () => {
   const handleCardPress = (cardType) => {
     // Navigate and send parameters based on the card pressed
     router.push({
-      pathname: '/(tabs)/Attendance', // Specify the page to navigate to
+      pathname: '/Head/Attendance', // Specify the page to navigate to
       params: { cardType }, // Pass parameters using query
     });
   };
+
+  const handleCardPress1 = (cardType) => {
+    // Navigate and send parameters based on the card pressed
+    router.push({
+      pathname: '/Head/Machine', // Specify the page to navigate to
+      params: { cardType }, // Pass parameters using query
+    });
+  };
+
+
 
   return (
     <View style={styles.container}>
@@ -30,7 +40,7 @@ const HomePage = () => {
         {/* Machine Card */}
         <TouchableOpacity
           style={styles.card}
-          onPress={() => handleCardPress('machine')}
+          onPress={() => handleCardPress1('machine')}
         >
           <Text style={styles.cardTitle}>Machine</Text>
           <Text style={styles.cardContent}>
@@ -80,4 +90,5 @@ const styles = StyleSheet.create({
 });
 
 export default HomePage;
+
 
