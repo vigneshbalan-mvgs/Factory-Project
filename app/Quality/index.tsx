@@ -7,7 +7,6 @@ export default function () {
   return (
     <View>
       <Text></Text>
-
       <TouchableOpacity onPress={() => router.push('/Quality/Machine')}>
         <Text>Machine</Text>
       </TouchableOpacity>

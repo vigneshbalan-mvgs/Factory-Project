@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, RefreshControl, TouchableOpacity, Dimensions } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { faker } from '@faker-js/faker';
 import RNDateTimePicker from '@react-native-community/datetimepicker';
+
+const { width } = Dimensions.get('window');
 
 export default function AttendancePage() {
   const [attendanceData, setAttendanceData] = useState([]);
@@ -54,13 +56,13 @@ export default function AttendancePage() {
       animation="fadeInUp"
       duration={600}
       delay={index * 100}
-      style={[styles.attendanceItem, { backgroundColor: index % 2 === 0 ? '#f9f9f9' : '#fff' }]}
+      style={[styles.attendanceItem, { backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9f9f9' }]}
     >
       <View style={styles.row}>
-        <Text style={[styles.cell, styles.headerCell, { width: '5%' }]}>{item.id}</Text>
-        <Text style={[styles.cell, styles.headerCell, { width: '20%' }]} numberOfLines={1}>{item.name}</Text>
+        <Text style={[styles.cell, styles.headerCell, { width: '10%' }]}>{item.id}</Text>
+        <Text style={[styles.cell, styles.headerCell, { width: '30%' }]} numberOfLines={1}>{item.name}</Text>
         <Text style={[styles.cell, styles.headerCell]} numberOfLines={1}>{item.job}</Text>
-        <Text style={[styles.cell, styles.statusCell, { color: item.status ? '#007AFF' : '#FF0000' }]}>
+        <Text style={[styles.cell, styles.statusCell, { color: item.status ? '#00796b' : '#F44336' }]}>
           {item.status ? ' Present' : ' Absent'}
         </Text>
       </View>
@@ -75,16 +77,17 @@ export default function AttendancePage() {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.header}>Attendance</Text>
-
-      <TouchableOpacity
-        style={styles.dateButton}
-        onPress={() => setShowDatePicker(true)}
-        accessibilityLabel="Select a date"
-      >
-        <Text style={styles.dateButtonText}>{selectedDate.toLocaleDateString()}</Text>
-      </TouchableOpacity>
+    <View style={styles.safeArea}>
+      <View style={styles.headerContainer}>
+        <Text style={styles.heading}>Attendance</Text>
+        <TouchableOpacity
+          style={styles.dateButton}
+          onPress={() => setShowDatePicker(true)}
+          accessibilityLabel="Select a date"
+        >
+          <Text style={styles.dateButtonText}>{selectedDate.toLocaleDateString()}</Text>
+        </TouchableOpacity>
+      </View>
 
       {showDatePicker && (
         <RNDateTimePicker
@@ -98,7 +101,7 @@ export default function AttendancePage() {
       {error && <Text style={styles.errorText}>{error}</Text>}
 
       {loading ? (
-        <ActivityIndicator size="large" color="#007AFF" />
+        <ActivityIndicator size="large" color="#00796b" />
       ) : attendanceData.length > 0 ? (
         <FlatList
           data={attendanceData}
@@ -118,20 +121,40 @@ export default function AttendancePage() {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeArea: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-    paddingTop: 50,
-    paddingHorizontal: 20,
+    backgroundColor: '#e0f7fa', // Soft blue gradient background
   },
-  header: {
-    fontSize: 24,
+  headerContainer: {
+    alignItems: 'center',
+    marginBottom: 30,
+    paddingHorizontal: 30,
+    backgroundColor: '#00796b', // Dark teal background for header
+    paddingVertical: 20,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 8,
+    shadowOffset: { width: 0, height: 6 },
+  },
+  heading: {
+    fontSize: width * 0.07, // Use screen width for dynamic font size
     fontWeight: 'bold',
-    marginBottom: 20,
-    color: '#333',
-    textAlign: 'center',
+    color: '#ffffff', // White text for contrast
+  },
+  dateButton: {
+    backgroundColor: '#00796b',
+    paddingVertical: 12,
+    borderRadius: 8,
     marginTop: 10,
-    paddingBottom: 10,
+    alignItems: 'center',
+  },
+  dateButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '600',
   },
   listContainer: {
     paddingBottom: 20,
@@ -151,34 +174,23 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
     width: '100%',
+    paddingHorizontal: 10,
   },
   cell: {
     flex: 1,
-    fontSize: 12,
+    fontSize: 14,
     fontWeight: '500',
     color: '#333',
     textAlign: 'center',
   },
   headerCell: {
     fontWeight: 'bold',
-    color: '#007AFF',
+    color: '#00796b',
   },
   statusCell: {
     fontWeight: '600',
     flexDirection: 'row',
     alignItems: 'center',
-  },
-  dateButton: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 10,
-    borderRadius: 10,
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  dateButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: '600',
   },
   errorText: {
     color: '#FF0000',

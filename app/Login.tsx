@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Button, StyleSheet, Text } from 'react-native';
-import { useTheme } from '@/const/theme';
+import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { colors } from '@/const/colors'; // Import the colors directly
 import Input from "@/componant/input";
 import { Dropdown } from "react-native-element-dropdown";
 import { router } from 'expo-router';
@@ -8,7 +8,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import URL from '@/hooks/config';
 
 export default function SignUpScreen() {
-  const { colors } = useTheme(); // Get colors from theme
   const [role, setRole] = useState(null);
   const [name, setName] = useState('');
   const [id, setId] = useState('');
@@ -56,7 +55,6 @@ export default function SignUpScreen() {
         setResponseMessage('Sign-up successful');
         await AsyncStorage.setItem('token', responseData.data);
 
-
         // Save session details after successful signup
         await AsyncStorage.setItem('isLoggedIn', 'true');
         await AsyncStorage.setItem('role', role);
@@ -91,7 +89,7 @@ export default function SignUpScreen() {
       <Text style={[styles.title, { color: colors.text }]}>Sign Up</Text>
 
       <Dropdown
-        style={[styles.dropdown, { borderColor: colors.border }]}
+        style={[styles.dropdown, { borderColor: colors.secondary }]} // Use theme's secondary color
         data={roleOptions}
         labelField="label"
         valueField="value"
@@ -105,6 +103,7 @@ export default function SignUpScreen() {
         placeholder="Enter your name"
         value={name}
         onChangeText={setName}
+        style={[styles.input, { borderColor: colors.secondary }]} // Use theme's secondary color
       />
 
       <Input
@@ -112,6 +111,7 @@ export default function SignUpScreen() {
         placeholder="Enter your ID"
         value={id}
         onChangeText={setId}
+        style={[styles.input, { borderColor: colors.secondary }]} // Use theme's secondary color
       />
 
       <Input
@@ -120,14 +120,20 @@ export default function SignUpScreen() {
         value={password}
         onChangeText={setPassword}
         secureTextEntry={true}
+        style={[styles.input, { borderColor: colors.secondary }]} // Use theme's secondary color
       />
 
-      <Button
-        title="Sign Up"
+      <TouchableOpacity
+        style={[styles.button, { backgroundColor: colors.primary }]}
         onPress={handleSignUp}
-        color={colors.primary}
-      />
+      >
+        <Text style={[styles.buttonText, { color: colors.background }]}>Login</Text>
+      </TouchableOpacity>
 
+      {/* Display response message */}
+      {responseMessage && (
+        <Text style={[styles.responseMessage, { color: colors.text }]}>{responseMessage}</Text>
+      )}
     </View>
   );
 }
@@ -146,11 +152,10 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     borderWidth: 1,
-    borderColor: '#ccc',
-
     width: '100%',
     height: 50,
     marginBottom: 20,
+    backgroundColor: "#fff",
     borderRadius: 8,
     paddingHorizontal: 10,
   },
@@ -166,6 +171,17 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 16,
   },
+  button: {
+    padding: 10,
+    width: '100%',
+    alignItems: 'center',
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  buttonText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  }
 });
 
 const roleOptions = [

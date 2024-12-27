@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { colors } from '@/const/colors'; // Import colors from colors.js
+import * as Animatable from 'react-native-animatable'; // Import Animatable
 
 const AdminView = () => {
   const [machineDetails, setMachineDetails] = useState({});
@@ -77,12 +79,16 @@ const AdminView = () => {
 
   // Render function for quality test items (Updated to show production details)
   const renderTestItem = ({ item }) => (
-    <View style={styles.testCard}>
-      <Text>Name: UserName</Text>
-      <Text>Quantity: {item.quantity}</Text>
-      <Text>Produced: {item.produced}</Text>
-      <Text>Weight: {item.weight}</Text>
-      <Text>Expected Weight: {item.expected_weight}</Text>
+    <Animatable.View
+      animation="fadeInUp" // Animation on render
+      duration={700}
+      style={styles.testCard}
+    >
+      <Text style={styles.testCardText}>Name: UserName</Text>
+      <Text style={styles.testCardText}>Quantity: {item.quantity}</Text>
+      <Text style={styles.testCardText}>Produced: {item.produced}</Text>
+      <Text style={styles.testCardText}>Weight: {item.weight}</Text>
+      <Text style={styles.testCardText}>Expected Weight: {item.expected_weight}</Text>
       <TouchableOpacity
         style={[styles.approveButton, item.approved && styles.approvedButton]}
         onPress={() => approveTest(item.test_id)}
@@ -90,13 +96,13 @@ const AdminView = () => {
       >
         <Text style={styles.buttonText}>{item.approved ? 'Approved' : 'Approve'}</Text>
       </TouchableOpacity>
-    </View>
+    </Animatable.View>
   );
 
   if (loading) {
     return (
       <View style={styles.loaderContainer}>
-        <ActivityIndicator size="large" color="#007BFF" />
+        <ActivityIndicator size="large" color={colors.primary} />
       </View>
     );
   }
@@ -104,26 +110,33 @@ const AdminView = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
-        <Text style={styles.header}>Machine Details</Text>
-        <View style={styles.card}>
-          <View style={styles.card}>
-            <Text>Started: {machineDetails.started}</Text>
-            <Text>Stopped: {machineDetails.stopped}</Text>
-            <Text>Reason: {machineDetails.reason}</Text>
-          </View>
-          <View style={styles.card}>
-            <Text>Status: {machineDetails.status}</Text>
-            <Text>Mold: {machineDetails.mold}</Text>
-            <Text>Material: {machineDetails.material}</Text>
-          </View>
-        </View>
+        {/* Header animation */}
+        <Animatable.Text animation="fadeInDown" duration={600} style={styles.header}>Machine Details</Animatable.Text>
 
-        <Text style={styles.header}>Production Details</Text>
+        <Animatable.View animation="fadeInDown" duration={700} style={styles.card}>
+          <Text style={styles.cardText}>Started: {machineDetails.started}</Text>
+          <Text style={styles.cardText}>Stopped: {machineDetails.stopped}</Text>
+          <Text style={styles.cardText}>Reason: {machineDetails.reason}</Text>
+        </Animatable.View>
+
+        <Animatable.View animation="fadeInDown" duration={700} style={styles.card}>
+          <Text style={styles.cardText}>Status: {machineDetails.status}</Text>
+          <Text style={styles.cardText}>Mold: {machineDetails.mold}</Text>
+          <Text style={styles.cardText}>Material: {machineDetails.material}</Text>
+        </Animatable.View>
+
+        <Animatable.Text animation="fadeInDown" duration={600} style={styles.header}>Production Details</Animatable.Text>
+
         <FlatList
           data={qualityTests}
           keyExtractor={(item) => item.test_id}
           renderItem={renderTestItem}
           contentContainerStyle={styles.listContainer}
+          ListFooterComponent={() => (
+
+            <View style={{ height: 50 }}></View>
+          )
+          }
         />
       </ScrollView>
     </SafeAreaView>
@@ -133,56 +146,60 @@ const AdminView = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f9fa',
-    padding: 10,
+    backgroundColor: colors.background, // Use background color from colors.js
+    padding: 15,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
     textAlign: 'center',
-    color: '#343a40',
+    color: colors.primary, // Use primary color from colors.js
   },
   card: {
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    padding: 15,
-    marginVertical: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: colors.cardBackground, // Use card background color from colors.js
+    borderRadius: 10,
+    padding: 20,
+    marginVertical: 10,
+    shadowColor: colors.shadowColor, // Use shadow color from colors.js
+    shadowOpacity: colors.shadowOpacity, // Use shadow opacity from colors.js
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: colors.elevation, // Use elevation from colors.js
+  },
+  cardText: {
+    fontSize: 16,
+    color: colors.text, // Use general text color from colors.js
+    marginBottom: 5,
   },
   testCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 8,
-    padding: 15,
-    marginVertical: 8,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 1 },
-    shadowRadius: 4,
-    elevation: 2,
+    backgroundColor: colors.cardBackground, // Use card background color from colors.js
+    borderRadius: 10,
+    padding: 20,
+    marginVertical: 10,
+    shadowColor: colors.shadowColor, // Use shadow color from colors.js
+    shadowOpacity: colors.shadowOpacity, // Use shadow opacity from colors.js
+    shadowOffset: { width: 0, height: 3 },
+    shadowRadius: 6,
+    elevation: colors.elevation, // Use elevation from colors.js
   },
-  testTitle: {
+  testCardText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    color: colors.text, // Use general text color from colors.js
     marginBottom: 5,
-    color: '#007BFF',
   },
   approveButton: {
-    backgroundColor: '#28a745',
-    padding: 10,
-    borderRadius: 5,
-    marginTop: 10,
+    backgroundColor: colors.primary, // Use primary color for button
+    padding: 12,
+    borderRadius: 8,
+    marginTop: 15,
     alignItems: 'center',
   },
   approvedButton: {
-    backgroundColor: '#6c757d',
+    backgroundColor: colors.secondaryLight, // Use secondary light color for approved state
   },
   buttonText: {
-    color: '#fff',
+    color: colors.buttonText, // Use button text color from colors.js
     fontWeight: 'bold',
   },
   loaderContainer: {

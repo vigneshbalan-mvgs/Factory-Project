@@ -7,7 +7,7 @@ const useUserData = () => {
     name: '',
     role: '',
     id: '',
-    tokne: '',
+    token: '',
   });
   const [loading, setLoading] = useState(true);
 
